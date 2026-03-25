@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_credit_application_user,credit.application.user,model_credit_application,base.group_user,1,1,1,1
+access_credit_application_document_user,credit.application.document.user,model_credit_application_document,base.group_user,1,1,1,1
+access_credit_application_public,credit.application.public,model_credit_application,base.group_public,0,0,1,0
+access_credit_application_document_public,credit.application.document.public,model_credit_application_document,base.group_public,0,0,1,0

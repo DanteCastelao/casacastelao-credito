@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Backend Tree View
+         ══════════════════════════════════════════════════════════════════ -->
+    <record id="credit_application_view_tree" model="ir.ui.view">
+        <field name="name">credit.application.tree</field>
+        <field name="model">credit.application</field>
+        <field name="arch" type="xml">
+            <tree string="Solicitudes de Crédito" decoration-info="state=='review'"
+                  decoration-success="state=='approved'" decoration-danger="state=='rejected'">
+                <field name="create_date" string="Fecha"/>
+                <field name="client_type" string="Tipo"/>
+                <field name="company_name"/>
+                <field name="full_name"/>
+                <field name="cuit"/>
+                <field name="dni_cuit"/>
+                <field name="state" widget="badge"
+                       decoration-info="state=='review'"
+                       decoration-success="state=='approved'"
+                       decoration-danger="state=='rejected'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Backend Form View
+         ══════════════════════════════════════════════════════════════════ -->
+    <record id="credit_application_view_form" model="ir.ui.view">
+        <field name="name">credit.application.form</field>
+        <field name="model">credit.application</field>
+        <field name="arch" type="xml">
+            <form string="Solicitud de Crédito">
+                <header>
+                    <button name="action_set_review" string="Pasar a Revisión"
+                            type="object" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Aprobar"
+                            type="object" class="btn-success"
+                            invisible="state != 'review'"/>
+                    <button name="action_reject" string="Rechazar"
+                            type="object" class="btn-danger"
+                            invisible="state != 'review'"/>
+                    <button name="action_reset_draft" string="Volver a Borrador"
+                            type="object"
+                            invisible="state not in ('review','approved','rejected')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,review,approved,rejected"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Tipo de Cliente">
+                            <field name="client_type"/>
+                            <field name="accept_terms"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <!-- Empresa Tab -->
+                        <page string="Datos Empresa"
+                              invisible="client_type != 'company'">
+                            <group>
+                                <group>
+                                    <field name="company_name"/>
+                                    <field name="cuit"/>
+                                    <field name="email_corp"/>
+                                    <field name="cbu_alias"/>
+                                </group>
+                            </group>
+                            <group string="Sector Compras">
+                                <group>
+                                    <field name="compras_name"/>
+                                    <field name="compras_mail"/>
+                                    <field name="compras_phone"/>
+                                </group>
+                            </group>
+                            <group string="Sector Pagos">
+                                <group>
+                                    <field name="pagos_name"/>
+                                    <field name="pagos_mail"/>
+                                    <field name="pagos_phone"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- Personal Tab -->
+                        <page string="Datos Personales"
+                              invisible="client_type != 'personal'">
+                            <group>
+                                <group>
+                                    <field name="full_name"/>
+                                    <field name="dni_cuit"/>
+                                    <field name="email_contact"/>
+                                    <field name="phone"/>
+                                    <field name="cbu_alias_personal"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- Documentos Tab -->
+                        <page string="Documentación">
+                            <field name="document_ids">
+                                <tree editable="bottom">
+                                    <field name="doc_type"/>
+                                    <field name="filename"/>
+                                    <field name="file" filename="filename"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Action & Menu
+         ══════════════════════════════════════════════════════════════════ -->
+    <record id="credit_application_action" model="ir.actions.act_window">
+        <field name="name">Solicitudes de Crédito</field>
+        <field name="res_model">credit.application</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="credit_application_menu_root"
+              name="Créditos"
+              sequence="90"/>
+
+    <menuitem id="credit_application_menu_main"
+              name="Solicitudes"
+              parent="credit_application_menu_root"
+              action="credit_application_action"
+              sequence="10"/>
+
+</odoo>

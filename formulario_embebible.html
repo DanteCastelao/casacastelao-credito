@@ -1,0 +1,1102 @@
+<!--
+  ╔══════════════════════════════════════════════════════════════════════╗
+  ║  SOLICITUD DE CRÉDITO Y ALTA COMERCIAL – CASA CASTELAO             ║
+  ║                                                                      ║
+  ║  INSTRUCCIONES:                                                      ║
+  ║  1. Entrá a tu sitio web de Odoo → Editá la página                  ║
+  ║  2. Arrastrá el bloque "HTML/Código" (o "Embed Code")               ║
+  ║  3. Pegá TODO este código adentro                                    ║
+  ║  4. Guardá la página                                                 ║
+  ║                                                                      ║
+  ║  IMPORTANTE: Necesitás configurar el Google Apps Script primero.    ║
+  ║  Seguí las instrucciones en google_apps_script.js                   ║
+  ╚══════════════════════════════════════════════════════════════════════╝
+-->
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    .cc-form-wrapper * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    .cc-form-wrapper {
+        --cc-primary: #1a237e;
+        --cc-primary-lt: #3949ab;
+        --cc-accent: #00bfa5;
+        --cc-accent-hv: #00e5c3;
+        --cc-danger: #e53935;
+        --cc-card: #ffffff;
+        --cc-text: #263238;
+        --cc-muted: #78909c;
+        --cc-border: #e0e0e0;
+        --cc-radius: 14px;
+        --cc-radius-sm: 8px;
+        --cc-shadow: 0 2px 12px rgba(0, 0, 0, .06);
+        --cc-shadow-hover: 0 4px 24px rgba(0, 0, 0, .10);
+        --cc-ease: .25s cubic-bezier(.4, 0, .2, 1);
+        font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+        color: var(--cc-text);
+        max-width: 820px;
+        margin: 0 auto 60px;
+        padding: 0 16px;
+        line-height: 1.5;
+    }
+
+    .cc-header {
+        background: linear-gradient(135deg, var(--cc-primary) 0%, var(--cc-primary-lt) 100%);
+        border-radius: 0 0 var(--cc-radius) var(--cc-radius);
+        padding: 44px 32px 38px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 32px;
+    }
+
+    .cc-header::before {
+        content: '';
+        position: absolute;
+        top: -40%;
+        right: -18%;
+        width: 380px;
+        height: 380px;
+        background: rgba(255, 255, 255, .04);
+        border-radius: 50%;
+    }
+
+    .cc-header h1 {
+        color: #fff;
+        font-size: 1.85rem;
+        font-weight: 800;
+        margin: 0 0 10px;
+        letter-spacing: -.02em;
+        position: relative;
+        z-index: 1;
+    }
+
+    .cc-header p {
+        color: rgba(255, 255, 255, .85);
+        font-size: 1rem;
+        line-height: 1.6;
+        max-width: 580px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .cc-section {
+        background: var(--cc-card);
+        border-radius: var(--cc-radius);
+        box-shadow: var(--cc-shadow);
+        border: 1px solid var(--cc-border);
+        padding: 30px 28px 26px;
+        margin-bottom: 22px;
+        position: relative;
+        transition: box-shadow var(--cc-ease);
+    }
+
+    .cc-section:hover {
+        box-shadow: var(--cc-shadow-hover);
+    }
+
+    .cc-step-badge {
+        position: absolute;
+        top: -13px;
+        left: 24px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--cc-primary), var(--cc-primary-lt));
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: .8rem;
+        box-shadow: 0 2px 8px rgba(26, 35, 126, .3);
+    }
+
+    .cc-section h2 {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--cc-primary);
+        margin: 0 0 4px;
+    }
+
+    .cc-section .cc-desc {
+        color: var(--cc-muted);
+        font-size: .9rem;
+        margin: 0 0 18px;
+    }
+
+    .cc-radios {
+        display: flex;
+        gap: 14px;
+    }
+
+    .cc-radio-card {
+        flex: 1;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .cc-radio-card input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .cc-radio-body {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 18px;
+        border: 2px solid var(--cc-border);
+        border-radius: var(--cc-radius-sm);
+        transition: all var(--cc-ease);
+        background: var(--cc-card);
+    }
+
+    .cc-radio-card input:checked+.cc-radio-body {
+        border-color: var(--cc-primary);
+        background: linear-gradient(135deg, rgba(26, 35, 126, .04), rgba(57, 73, 171, .06));
+        box-shadow: 0 0 0 3px rgba(26, 35, 126, .12);
+    }
+
+    .cc-radio-card:hover .cc-radio-body {
+        border-color: var(--cc-primary-lt);
+    }
+
+    .cc-radio-icon {
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .cc-radio-label {
+        font-size: .9rem;
+        line-height: 1.4;
+    }
+
+    .cc-fields {
+        animation: ccFade .3s ease;
+    }
+
+    @keyframes ccFade {
+        from {
+            opacity: 0;
+            transform: translateY(10px)
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0)
+        }
+    }
+
+    .cc-fields-intro {
+        color: var(--cc-muted);
+        font-size: .88rem;
+        margin: 0 0 14px;
+    }
+
+    .cc-row {
+        display: flex;
+        gap: 14px;
+        margin-bottom: 14px;
+    }
+
+    .cc-row.three {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .cc-field {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cc-field.full {
+        flex-basis: 100%;
+    }
+
+    .cc-field label {
+        font-size: .78rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .03em;
+        margin-bottom: 5px;
+        color: var(--cc-text);
+    }
+
+    .cc-field label .req {
+        color: var(--cc-danger);
+    }
+
+    .cc-field input[type="text"],
+    .cc-field input[type="email"],
+    .cc-field input[type="tel"] {
+        width: 100%;
+        padding: 11px 13px;
+        border: 1.5px solid var(--cc-border);
+        border-radius: var(--cc-radius-sm);
+        font-size: .92rem;
+        font-family: inherit;
+        color: var(--cc-text);
+        background: #fafbfc;
+        transition: all var(--cc-ease);
+        outline: none;
+    }
+
+    .cc-field input:focus {
+        border-color: var(--cc-primary);
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(26, 35, 126, .10);
+    }
+
+    .cc-field input::placeholder {
+        color: #b0bec5;
+    }
+
+    .cc-field input.cc-error {
+        border-color: var(--cc-danger) !important;
+    }
+
+    .cc-subsection {
+        font-size: .92rem;
+        font-weight: 600;
+        color: var(--cc-primary-lt);
+        margin: 20px 0 10px;
+        padding-bottom: 5px;
+        border-bottom: 2px solid rgba(57, 73, 171, .12);
+    }
+
+    .cc-doc-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        border: 1.5px dashed var(--cc-border);
+        border-radius: var(--cc-radius-sm);
+        margin-bottom: 10px;
+        background: #fafbfc;
+        transition: all var(--cc-ease);
+    }
+
+    .cc-doc-item:hover {
+        border-color: var(--cc-primary-lt);
+        background: rgba(57, 73, 171, .03);
+    }
+
+    .cc-doc-icon {
+        font-size: 1.4rem;
+        flex-shrink: 0;
+    }
+
+    .cc-doc-info {
+        flex: 1;
+    }
+
+    .cc-doc-info label {
+        display: block;
+        font-size: .85rem;
+        font-weight: 600;
+        color: var(--cc-text);
+        margin-bottom: 6px;
+    }
+
+    .cc-doc-info label .req {
+        color: var(--cc-danger);
+    }
+
+    .cc-file-input {
+        font-size: .82rem;
+        font-family: inherit;
+        color: var(--cc-muted);
+    }
+
+    .cc-file-input::file-selector-button {
+        padding: 7px 14px;
+        border: none;
+        border-radius: 6px;
+        background: linear-gradient(135deg, var(--cc-primary), var(--cc-primary-lt));
+        color: #fff;
+        font-weight: 600;
+        font-size: .78rem;
+        cursor: pointer;
+        margin-right: 10px;
+        transition: opacity var(--cc-ease);
+    }
+
+    .cc-file-input::file-selector-button:hover {
+        opacity: .85;
+    }
+
+    .cc-file-error {
+        color: var(--cc-danger);
+        font-size: .78rem;
+        margin-top: 3px;
+        font-weight: 500;
+    }
+
+    .cc-file-ok {
+        color: var(--cc-accent);
+        font-size: .78rem;
+        margin-top: 3px;
+        font-weight: 500;
+    }
+
+    .cc-terms-box {
+        max-height: 240px;
+        overflow-y: auto;
+        padding: 18px 22px;
+        border: 1.5px solid var(--cc-border);
+        border-radius: var(--cc-radius-sm);
+        background: #fafbfc;
+        margin-bottom: 18px;
+        font-size: .88rem;
+        line-height: 1.6;
+        color: #455a64;
+    }
+
+    .cc-terms-box h3 {
+        font-size: .95rem;
+        font-weight: 700;
+        color: var(--cc-primary);
+        margin: 0 0 10px;
+    }
+
+    .cc-terms-box ol {
+        padding-left: 18px;
+        margin: 0;
+    }
+
+    .cc-terms-box li {
+        margin-bottom: 8px;
+    }
+
+    .cc-terms-box::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .cc-terms-box::-webkit-scrollbar-thumb {
+        background: var(--cc-border);
+        border-radius: 3px;
+    }
+
+    .cc-terms-check {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        cursor: pointer;
+        padding: 12px 16px;
+        border-radius: var(--cc-radius-sm);
+        transition: background var(--cc-ease);
+    }
+
+    .cc-terms-check:hover {
+        background: rgba(26, 35, 126, .03);
+    }
+
+    .cc-terms-check input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        margin-top: 2px;
+        accent-color: var(--cc-primary);
+        flex-shrink: 0;
+        cursor: pointer;
+    }
+
+    .cc-terms-check span {
+        font-size: .9rem;
+        line-height: 1.5;
+    }
+
+    .cc-submit-wrap {
+        text-align: center;
+        margin: 28px 0 16px;
+    }
+
+    .cc-submit-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 15px 44px;
+        border: none;
+        border-radius: 50px;
+        background: linear-gradient(135deg, var(--cc-accent), #26c6da);
+        color: #fff;
+        font-family: inherit;
+        font-size: 1.05rem;
+        font-weight: 700;
+        letter-spacing: .04em;
+        cursor: pointer;
+        text-transform: uppercase;
+        box-shadow: 0 4px 20px rgba(0, 191, 165, .35);
+        transition: all var(--cc-ease);
+    }
+
+    .cc-submit-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 28px rgba(0, 191, 165, .5);
+        background: linear-gradient(135deg, var(--cc-accent-hv), #4dd0e1);
+    }
+
+    .cc-submit-btn:disabled {
+        opacity: .4;
+        cursor: not-allowed;
+        filter: grayscale(.4);
+    }
+
+    .cc-submit-btn.loading {
+        pointer-events: none;
+        opacity: .7;
+    }
+
+    .cc-submit-btn.loading::after {
+        content: '';
+        width: 16px;
+        height: 16px;
+        border: 2.5px solid rgba(255, 255, 255, .3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: ccSpin .6s linear infinite;
+        margin-left: 6px;
+    }
+
+    @keyframes ccSpin {
+        to {
+            transform: rotate(360deg)
+        }
+    }
+
+    .cc-success {
+        display: none;
+        background: var(--cc-card);
+        border-radius: var(--cc-radius);
+        box-shadow: var(--cc-shadow-hover);
+        padding: 44px 36px;
+        text-align: center;
+        border: 1px solid var(--cc-border);
+        margin-top: 24px;
+        animation: ccFade .4s ease;
+    }
+
+    .cc-success.show {
+        display: block;
+    }
+
+    .cc-success-icon {
+        font-size: 3.5rem;
+        margin-bottom: 10px;
+        animation: ccBounce 1.2s ease infinite;
+    }
+
+    @keyframes ccBounce {
+
+        0%,
+        100% {
+            transform: translateY(0)
+        }
+
+        50% {
+            transform: translateY(-8px)
+        }
+    }
+
+    .cc-success h1 {
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: var(--cc-primary);
+        margin: 0 0 14px;
+    }
+
+    .cc-success .lead {
+        font-size: .98rem;
+        line-height: 1.65;
+        color: #455a64;
+        margin: 0 0 28px;
+    }
+
+    .cc-success-steps {
+        text-align: left;
+        margin-bottom: 28px;
+    }
+
+    .cc-success-steps h2 {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--cc-primary);
+        margin: 0 0 14px;
+    }
+
+    .cc-success-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .cc-step-num {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--cc-accent), #26c6da);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: .8rem;
+        flex-shrink: 0;
+    }
+
+    .cc-success-step p {
+        margin: 3px 0 0;
+        font-size: .92rem;
+        line-height: 1.5;
+        color: #455a64;
+    }
+
+    .cc-success-thanks {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--cc-accent);
+        margin: 0 0 20px;
+    }
+
+    .cc-back-btn {
+        display: inline-block;
+        padding: 11px 28px;
+        border-radius: 50px;
+        background: var(--cc-primary);
+        color: #fff !important;
+        text-decoration: none !important;
+        font-weight: 600;
+        font-size: .9rem;
+        transition: all var(--cc-ease);
+    }
+
+    .cc-back-btn:hover {
+        background: var(--cc-primary-lt);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(26, 35, 126, .25);
+    }
+
+    .cc-error-banner {
+        display: none;
+        padding: 14px 20px;
+        background: #ffebee;
+        border: 1px solid #ef9a9a;
+        border-radius: var(--cc-radius-sm);
+        color: #c62828;
+        font-size: .9rem;
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+    .cc-error-banner.show {
+        display: block;
+        animation: ccFade .3s ease;
+    }
+
+    .cc-progress-bar {
+        height: 4px;
+        background: #e0e0e0;
+        border-radius: 2px;
+        margin-bottom: 16px;
+        overflow: hidden;
+        display: none;
+    }
+
+    .cc-progress-bar.show {
+        display: block;
+    }
+
+    .cc-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--cc-accent), #26c6da);
+        border-radius: 2px;
+        width: 0%;
+        transition: width .3s ease;
+    }
+
+    @media (max-width:640px) {
+        .cc-header {
+            padding: 28px 18px 24px;
+        }
+
+        .cc-header h1 {
+            font-size: 1.3rem;
+        }
+
+        .cc-radios {
+            flex-direction: column;
+        }
+
+        .cc-section {
+            padding: 22px 18px 18px;
+        }
+
+        .cc-row,
+        .cc-row.three {
+            flex-direction: column;
+            display: flex;
+        }
+
+        .cc-submit-btn {
+            width: 100%;
+            justify-content: center;
+            padding: 15px 20px;
+        }
+
+        .cc-success {
+            padding: 32px 22px;
+        }
+    }
+</style>
+
+<div class="cc-form-wrapper">
+    <div class="cc-header">
+        <h1>Solicitud de Crédito y Alta Comercial</h1>
+        <p>Por favor, completá los siguientes datos para habilitar el pago con
+            <strong>cheques diferidos</strong> o tu <strong>cuenta corriente</strong>.
+        </p>
+    </div>
+
+    <div class="cc-error-banner" id="ccErrorBanner"></div>
+    <div class="cc-progress-bar" id="ccProgressBar">
+        <div class="cc-progress-fill" id="ccProgressFill"></div>
+    </div>
+
+    <form id="ccCreditForm">
+        <!-- SECTION 1 – Perfil -->
+        <div class="cc-section">
+            <div class="cc-step-badge">1</div>
+            <h2>Perfil del Cliente</h2>
+            <p class="cc-desc">¿Cómo vas a operar con nosotros?</p>
+            <div class="cc-radios">
+                <label class="cc-radio-card">
+                    <input type="radio" name="client_type" value="company" checked>
+                    <div class="cc-radio-body">
+                        <span class="cc-radio-icon">🏢</span>
+                        <span class="cc-radio-label">A nombre de una <strong>Empresa</strong> (Sociedad)</span>
+                    </div>
+                </label>
+                <label class="cc-radio-card">
+                    <input type="radio" name="client_type" value="personal">
+                    <div class="cc-radio-body">
+                        <span class="cc-radio-icon">👤</span>
+                        <span class="cc-radio-label">A nombre <strong>Personal</strong> (Monotributista /
+                            Unipersonal)</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- SECTION 2 – Información -->
+        <div class="cc-section">
+            <div class="cc-step-badge">2</div>
+            <h2>Información General</h2>
+
+            <!-- EMPRESA -->
+            <div id="ccCompanyFields" class="cc-fields">
+                <p class="cc-fields-intro">Completá los datos de tu empresa:</p>
+                <div class="cc-row">
+                    <div class="cc-field"><label>Razón Social <span class="req">*</span></label><input type="text"
+                            name="razon_social" placeholder="Ej: Mi Empresa S.A."></div>
+                    <div class="cc-field"><label>CUIT <span class="req">*</span></label><input type="text" name="cuit"
+                            id="ccCuit" placeholder="XX-XXXXXXXX-X"></div>
+                </div>
+                <div class="cc-row">
+                    <div class="cc-field full"><label>Email Corporativo <span class="req">*</span></label><input
+                            type="email" name="email_corp" placeholder="ejemplo@empresa.com"></div>
+                </div>
+                <h3 class="cc-subsection">Sector Compras</h3>
+                <div class="cc-row three">
+                    <div class="cc-field"><label>Nombre <span class="req">*</span></label><input type="text"
+                            name="compras_nombre"></div>
+                    <div class="cc-field"><label>Mail <span class="req">*</span></label><input type="email"
+                            name="compras_mail"></div>
+                    <div class="cc-field"><label>Teléfono <span class="req">*</span></label><input type="tel"
+                            name="compras_telefono"></div>
+                </div>
+                <h3 class="cc-subsection">Sector Pagos</h3>
+                <div class="cc-row three">
+                    <div class="cc-field"><label>Nombre <span class="req">*</span></label><input type="text"
+                            name="pagos_nombre"></div>
+                    <div class="cc-field"><label>Mail <span class="req">*</span></label><input type="email"
+                            name="pagos_mail"></div>
+                    <div class="cc-field"><label>Teléfono <span class="req">*</span></label><input type="tel"
+                            name="pagos_telefono"></div>
+                </div>
+                <div class="cc-row">
+                    <div class="cc-field full"><label>CBU / Alias para operaciones <span
+                                class="req">*</span></label><input type="text" name="cbu_alias"
+                            placeholder="CBU o Alias bancario"></div>
+                </div>
+            </div>
+
+            <!-- PERSONAL -->
+            <div id="ccPersonalFields" class="cc-fields" style="display:none;">
+                <p class="cc-fields-intro">Completá tus datos personales:</p>
+                <div class="cc-row">
+                    <div class="cc-field"><label>Nombre Completo <span class="req">*</span></label><input type="text"
+                            name="nombre_completo"></div>
+                    <div class="cc-field"><label>DNI / CUIT <span class="req">*</span></label><input type="text"
+                            name="dni_cuit"></div>
+                </div>
+                <div class="cc-row">
+                    <div class="cc-field"><label>Email de Contacto <span class="req">*</span></label><input type="email"
+                            name="email_contacto" placeholder="ejemplo@mail.com"></div>
+                    <div class="cc-field"><label>Teléfono Celular <span class="req">*</span></label><input type="tel"
+                            name="telefono" placeholder="+54 9 ..."></div>
+                </div>
+                <div class="cc-row">
+                    <div class="cc-field full"><label>CBU / Alias para operaciones <span
+                                class="req">*</span></label><input type="text" name="cbu_alias_personal"
+                            placeholder="CBU o Alias bancario"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3 – Documentación -->
+        <div class="cc-section">
+            <div class="cc-step-badge">3</div>
+            <h2>Documentación Digital</h2>
+            <p class="cc-desc">Por favor, adjuntá archivos claros en formato PDF o imagen <strong>(máx. 5 MB
+                    c/u)</strong>.</p>
+
+            <div id="ccCompanyDocs">
+                <div class="cc-doc-item">
+                    <div class="cc-doc-icon">📄</div>
+                    <div class="cc-doc-info"><label>Constancia CUIT actualizada <span class="req">*</span></label><input
+                            type="file" data-label="Constancia CUIT" accept=".pdf,.jpg,.jpeg,.png" class="cc-file-input"
+                            data-required="true"></div>
+                </div>
+                <div class="cc-doc-item">
+                    <div class="cc-doc-icon">📄</div>
+                    <div class="cc-doc-info"><label>Formulario CM01 (Convenio Multilateral) <span
+                                class="req">*</span></label><input type="file" data-label="Formulario CM01"
+                            accept=".pdf,.jpg,.jpeg,.png" class="cc-file-input" data-required="true"></div>
+                </div>
+                <div class="cc-doc-item">
+                    <div class="cc-doc-icon">📄</div>
+                    <div class="cc-doc-info"><label>Certificado Exención IIBB (Si corresponde)</label><input type="file"
+                            data-label="Cert. Exención IIBB" accept=".pdf,.jpg,.jpeg,.png" class="cc-file-input"></div>
+                </div>
+                <div class="cc-doc-item">
+                    <div class="cc-doc-icon">📄</div>
+                    <div class="cc-doc-info"><label>Nota de Autorización (Opcional si usás Orden de
+                            Compra)</label><input type="file" data-label="Nota Autorización"
+                            accept=".pdf,.jpg,.jpeg,.png" class="cc-file-input"></div>
+                </div>
+            </div>
+
+            <div id="ccPersonalDocs" style="display:none;">
+                <div class="cc-doc-item">
+                    <div class="cc-doc-icon">🪪</div>
+                    <div class="cc-doc-info"><label>DNI — Frente <span class="req">*</span></label><input type="file"
+                            data-label="DNI Frente" accept=".pdf,.jpg,.jpeg,.png" class="cc-file-input"
+                            data-required="true"></div>
+                </div>
+                <div class="cc-doc-item">
+                    <div class="cc-doc-icon">🪪</div>
+                    <div class="cc-doc-info"><label>DNI — Dorso <span class="req">*</span></label><input type="file"
+                            data-label="DNI Dorso" accept=".pdf,.jpg,.jpeg,.png" class="cc-file-input"
+                            data-required="true"></div>
+                </div>
+                <div class="cc-doc-item">
+                    <div class="cc-doc-icon">📄</div>
+                    <div class="cc-doc-info"><label>Constancia de CUIT <span class="req">*</span></label><input
+                            type="file" data-label="Constancia CUIT" accept=".pdf,.jpg,.jpeg,.png" class="cc-file-input"
+                            data-required="true"></div>
+                </div>
+                <div class="cc-doc-item">
+                    <div class="cc-doc-icon">🏠</div>
+                    <div class="cc-doc-info"><label>Servicio Luz/Gas/Agua <span class="req">*</span></label><input
+                            type="file" data-label="Servicio Domicilio" accept=".pdf,.jpg,.jpeg,.png"
+                            class="cc-file-input" data-required="true"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4 – Términos -->
+        <div class="cc-section">
+            <div class="cc-step-badge">4</div>
+            <h2>Términos del Acuerdo Comercial</h2>
+            <div class="cc-terms-box">
+                <h3>Condiciones Generales — Casa Castelao</h3>
+                <ol>
+                    <li><strong>Declaración Jurada:</strong> El solicitante declara que toda la información y
+                        documentación adjunta es verdadera y vigente. Cualquier falsedad facultará a Casa Castelao a la
+                        cancelación inmediata de cualquier crédito otorgado.</li>
+                    <li><strong>Autorización de Consulta:</strong> Autoriza expresamente a Casa Castelao a consultar sus
+                        antecedentes crediticios en bases de datos públicas y privadas (BCRA, Veraz, Nosis, etc.).</li>
+                    <li><strong>Mora y Gastos:</strong> En caso de cheques rechazados o mora en el pago de la cuenta
+                        corriente, el solicitante se compromete a cubrir los gastos bancarios y los intereses punitorios
+                        vigentes a la fecha.</li>
+                    <li><strong>Órdenes de Compra:</strong> Se acepta que el envío de una Orden de Compra oficial por
+                        parte de la empresa solicitante vincula legalmente a la misma con el compromiso de pago, sin
+                        necesidad de autorizaciones adicionales.</li>
+                    <li><strong>Habilitación de Cheques:</strong> En el caso de ECHEQs, la mercadería se liberará
+                        únicamente una vez que el valor haya sido "Aceptado" por Casa Castelao en su plataforma
+                        bancaria.</li>
+                </ol>
+            </div>
+            <label class="cc-terms-check">
+                <input type="checkbox" id="ccAcceptTerms">
+                <span>He leído y acepto los <strong>términos y condiciones</strong> para operar con Casa
+                    Castelao.</span>
+            </label>
+        </div>
+
+        <div class="cc-submit-wrap">
+            <button type="submit" class="cc-submit-btn" id="ccSubmitBtn" disabled>🚀 ENVIAR SOLICITUD</button>
+        </div>
+    </form>
+
+    <div class="cc-success" id="ccSuccess">
+        <div class="cc-success-icon">🚀</div>
+        <h1>¡Recibimos todo perfecto!</h1>
+        <p class="lead">Gracias por enviarnos tu documentación. Nuestro equipo de <strong>Créditos</strong> ya está
+            revisando tu legajo para habilitarte el pago con <strong>Cheques Diferidos</strong> o la <strong>Cuenta
+                Corriente</strong>.</p>
+        <div class="cc-success-steps">
+            <h2>¿Qué sigue?</h2>
+            <div class="cc-success-step"><span class="cc-step-num">1</span>
+                <p>Analizamos los datos (esto suele demorar entre <strong>24 y 48 hs hábiles</strong>).</p>
+            </div>
+            <div class="cc-success-step"><span class="cc-step-num">2</span>
+                <p>Nos ponemos en contacto para confirmarte la <strong>activación de tu cuenta</strong> y tu
+                    <strong>límite inicial</strong>, o bien, para solicitarte información extra si el análisis lo
+                    requiere.
+                </p>
+            </div>
+        </div>
+        <p class="cc-success-thanks">¡Gracias por confiar en nosotros!</p>
+        <a href="/" class="cc-back-btn">← Volver al inicio</a>
+    </div>
+</div>
+
+<script>
+    (function () {
+        'use strict';
+
+        /* ══════════════════════════════════════════════════════════
+           CONFIGURACIÓN — Pegá acá la URL de tu Google Apps Script
+           ══════════════════════════════════════════════════════════ */
+        var SCRIPT_URL = 'PEGAR_URL_DEL_SCRIPT_AQUI';
+
+        var form = document.getElementById('ccCreditForm'),
+            companyFields = document.getElementById('ccCompanyFields'),
+            personalFields = document.getElementById('ccPersonalFields'),
+            companyDocs = document.getElementById('ccCompanyDocs'),
+            personalDocs = document.getElementById('ccPersonalDocs'),
+            acceptTerms = document.getElementById('ccAcceptTerms'),
+            submitBtn = document.getElementById('ccSubmitBtn'),
+            cuitInput = document.getElementById('ccCuit'),
+            successDiv = document.getElementById('ccSuccess'),
+            errorBanner = document.getElementById('ccErrorBanner'),
+            progressBar = document.getElementById('ccProgressBar'),
+            progressFill = document.getElementById('ccProgressFill'),
+            MAX_SIZE = 5 * 1024 * 1024;
+
+        if (!form) return;
+
+        function isCompany() { return form.querySelector('input[name="client_type"]:checked').value === 'company'; }
+
+        // Toggle empresa / personal
+        function toggle() {
+            var co = isCompany();
+            companyFields.style.display = co ? '' : 'none';
+            personalFields.style.display = co ? 'none' : '';
+            companyDocs.style.display = co ? '' : 'none';
+            personalDocs.style.display = co ? 'none' : '';
+            (co ? personalFields : companyFields).querySelectorAll('input').forEach(function (e) { e.value = ''; });
+            (co ? personalDocs : companyDocs).querySelectorAll('input[type="file"]').forEach(function (e) { e.value = ''; });
+        }
+        form.querySelectorAll('input[name="client_type"]').forEach(function (r) { r.addEventListener('change', toggle); });
+
+        // CUIT mask
+        if (cuitInput) {
+            cuitInput.addEventListener('input', function () {
+                var raw = this.value.replace(/\D/g, '').substring(0, 11), f = '';
+                if (raw.length > 2) { f = raw.substring(0, 2) + '-'; if (raw.length > 10) f += raw.substring(2, 10) + '-' + raw.substring(10, 11); else f += raw.substring(2); } else f = raw;
+                this.value = f;
+            });
+        }
+
+        // File size validation
+        form.querySelectorAll('.cc-file-input').forEach(function (fi) {
+            fi.addEventListener('change', function () {
+                var prev = this.parentNode.querySelector('.cc-file-error,.cc-file-ok');
+                if (prev) prev.remove();
+                if (this.files && this.files[0]) {
+                    var fb = document.createElement('div');
+                    if (this.files[0].size > MAX_SIZE) { fb.className = 'cc-file-error'; fb.textContent = '⚠ El archivo supera los 5 MB.'; this.value = ''; }
+                    else { fb.className = 'cc-file-ok'; fb.textContent = '✓ ' + this.files[0].name + ' (' + (this.files[0].size / 1024 / 1024).toFixed(2) + ' MB)'; }
+                    this.parentNode.appendChild(fb);
+                }
+            });
+        });
+
+        // Terms checkbox
+        acceptTerms.addEventListener('change', function () { submitBtn.disabled = !this.checked; });
+
+        // Clear error on focus
+        form.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"]').forEach(function (e) {
+            e.addEventListener('focus', function () { this.classList.remove('cc-error'); });
+        });
+
+        // Convert file to base64
+        function fileToBase64(file) {
+            return new Promise(function (resolve, reject) {
+                var reader = new FileReader();
+                reader.onload = function () { resolve(reader.result.split(',')[1]); };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Submit
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            var co = isCompany(), ok = true;
+
+            // Required text fields — Empresa
+            var reqCo = ['razon_social', 'cuit', 'email_corp', 'compras_nombre', 'compras_mail', 'compras_telefono', 'pagos_nombre', 'pagos_mail', 'pagos_telefono', 'cbu_alias'];
+            // Required text fields — Personal
+            var reqPe = ['nombre_completo', 'dni_cuit', 'email_contacto', 'telefono', 'cbu_alias_personal'];
+            var req = co ? reqCo : reqPe;
+
+            req.forEach(function (n) {
+                var el = form.querySelector('[name="' + n + '"]');
+                if (!el || !el.value.trim()) { ok = false; if (el) { el.classList.add('cc-error'); } }
+            });
+
+            // Required file inputs
+            var activeDocs = co ? companyDocs : personalDocs;
+            activeDocs.querySelectorAll('.cc-file-input[data-required="true"]').forEach(function (fi) {
+                if (!fi.files || !fi.files[0]) { ok = false; fi.style.borderColor = 'var(--cc-danger)'; }
+            });
+
+            if (!ok) {
+                showError('Por favor, completá todos los campos obligatorios (*) y adjuntá los documentos requeridos.');
+                // Focus first error
+                var first = form.querySelector('.cc-error');
+                if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            if (!acceptTerms.checked) { showError('Debés aceptar los términos y condiciones.'); return; }
+
+            hideError();
+
+            if (!SCRIPT_URL || SCRIPT_URL === 'PEGAR_URL_DEL_SCRIPT_AQUI') {
+                showError('⚠ Error de configuración: La URL del Google Apps Script no está configurada. Contactá al administrador del sitio.');
+                return;
+            }
+
+            submitBtn.classList.add('loading');
+            submitBtn.textContent = 'Subiendo archivos…';
+            progressBar.classList.add('show');
+            progressFill.style.width = '10%';
+
+            try {
+                // Build payload
+                var payload = {};
+                payload.tipo = co ? 'Empresa (Sociedad)' : 'Personal (Monotributista/Unipersonal)';
+
+                if (co) {
+                    payload.razon_social = val('razon_social');
+                    payload.cuit = val('cuit');
+                    payload.email_corp = val('email_corp');
+                    payload.compras_nombre = val('compras_nombre');
+                    payload.compras_mail = val('compras_mail');
+                    payload.compras_telefono = val('compras_telefono');
+                    payload.pagos_nombre = val('pagos_nombre');
+                    payload.pagos_mail = val('pagos_mail');
+                    payload.pagos_telefono = val('pagos_telefono');
+                    payload.cbu_alias = val('cbu_alias');
+                } else {
+                    payload.nombre_completo = val('nombre_completo');
+                    payload.dni_cuit = val('dni_cuit');
+                    payload.email_contacto = val('email_contacto');
+                    payload.telefono = val('telefono');
+                    payload.cbu_alias = val('cbu_alias_personal');
+                }
+
+                progressFill.style.width = '30%';
+                submitBtn.textContent = 'Procesando documentos…';
+
+                // Convert files to base64
+                var archivos = [];
+                var fileInputs = activeDocs.querySelectorAll('.cc-file-input');
+                for (var i = 0; i < fileInputs.length; i++) {
+                    var fi = fileInputs[i];
+                    if (fi.files && fi.files[0]) {
+                        var b64 = await fileToBase64(fi.files[0]);
+                        archivos.push({
+                            nombre: fi.files[0].name,
+                            mimeType: fi.files[0].type,
+                            etiqueta: fi.getAttribute('data-label') || fi.files[0].name,
+                            data: b64
+                        });
+                    }
+                    progressFill.style.width = (30 + ((i + 1) / fileInputs.length) * 40) + '%';
+                }
+                payload.archivos = archivos;
+
+                progressFill.style.width = '75%';
+                submitBtn.textContent = 'Enviando solicitud…';
+
+                // Send to Google Apps Script
+                var response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                    headers: { 'Content-Type': 'text/plain' },
+                    redirect: 'follow'
+                });
+
+                progressFill.style.width = '100%';
+
+                // GAS web apps return a 302 redirect; if the browser followed it
+                // successfully, try to parse JSON. On some browsers the redirected
+                // response may be opaque, so we handle that gracefully.
+                var result;
+                try {
+                    var text = await response.text();
+                    result = JSON.parse(text);
+                } catch (parseErr) {
+                    // If we got an HTTP 200 but couldn't parse, GAS likely
+                    // processed the request but the response was opaque/redirect.
+                    if (response.ok || response.type === 'opaqueredirect' || response.status === 0) {
+                        result = { success: true };
+                    } else {
+                        throw new Error('El servidor respondió con estado ' + response.status);
+                    }
+                }
+
+                if (result.success) {
+                    form.style.display = 'none';
+                    progressBar.classList.remove('show');
+                    successDiv.classList.add('show');
+                    window.scrollTo({ top: successDiv.offsetTop - 80, behavior: 'smooth' });
+                } else {
+                    throw new Error(result.error || 'Error desconocido');
+                }
+            } catch (err) {
+                showError('Error al enviar: ' + err.message + '. Intentá de nuevo.');
+                resetBtn();
+                progressBar.classList.remove('show');
+            }
+        });
+
+        function val(name) { var el = form.querySelector('[name="' + name + '"]'); return el ? el.value.trim() : ''; }
+        function showError(msg) { errorBanner.textContent = msg; errorBanner.classList.add('show'); window.scrollTo({ top: errorBanner.offsetTop - 100, behavior: 'smooth' }); }
+        function hideError() { errorBanner.classList.remove('show'); }
+        function resetBtn() { submitBtn.classList.remove('loading'); submitBtn.textContent = '🚀 ENVIAR SOLICITUD'; }
+    })();
+</script>

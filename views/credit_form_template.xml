@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         PUBLIC FORM PAGE
+         ══════════════════════════════════════════════════════════════════ -->
+    <template id="credit_form_page" name="Solicitud de Crédito">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <div class="credit-form-wrapper">
+                    <!-- ── Header ────────────────────────────────────── -->
+                    <div class="credit-form-header">
+                        <div class="credit-form-header-content">
+                            <h1>Solicitud de Crédito y Alta Comercial</h1>
+                            <p class="credit-form-subtitle">
+                                Por favor, completá los siguientes datos para habilitar el pago con
+                                <strong>cheques diferidos</strong> o tu <strong>cuenta corriente</strong>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <form action="/solicitud-credito/submit" method="POST"
+                          enctype="multipart/form-data" id="creditForm"
+                          class="credit-form-body">
+                        <input type="hidden" name="csrf_token"
+                               t-att-value="request.csrf_token()"/>
+
+                        <!-- ╔════════════════════════════════════════════╗
+                             ║  SECTION 1 – Perfil del Cliente           ║
+                             ╚════════════════════════════════════════════╝ -->
+                        <div class="credit-section" id="sectionProfile">
+                            <div class="credit-section-number">1</div>
+                            <h2 class="credit-section-title">Perfil del Cliente</h2>
+                            <p class="credit-section-desc">¿Cómo vas a operar con nosotros?</p>
+
+                            <div class="credit-radio-group">
+                                <label class="credit-radio-card" id="radioCompany">
+                                    <input type="radio" name="client_type" value="company" checked="checked"/>
+                                    <div class="credit-radio-card-body">
+                                        <span class="credit-radio-icon">🏢</span>
+                                        <span class="credit-radio-label">A nombre de una <strong>Empresa</strong> (Sociedad)</span>
+                                    </div>
+                                </label>
+                                <label class="credit-radio-card" id="radioPersonal">
+                                    <input type="radio" name="client_type" value="personal"/>
+                                    <div class="credit-radio-card-body">
+                                        <span class="credit-radio-icon">👤</span>
+                                        <span class="credit-radio-label">A nombre <strong>Personal</strong> (Monotributista / Unipersonal)</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- ╔════════════════════════════════════════════╗
+                             ║  SECTION 2 – Información General          ║
+                             ╚════════════════════════════════════════════╝ -->
+                        <div class="credit-section" id="sectionInfo">
+                            <div class="credit-section-number">2</div>
+                            <h2 class="credit-section-title">Información General</h2>
+
+                            <!-- ── Empresa Fields ────────────────────── -->
+                            <div id="companyFields" class="credit-fields-block">
+                                <p class="credit-fields-intro">Completá los datos de tu empresa:</p>
+                                <div class="credit-field-row">
+                                    <div class="credit-field">
+                                        <label for="company_name">Razón Social <span class="req">*</span></label>
+                                        <input type="text" name="company_name" id="company_name"
+                                               placeholder="Ej: Mi Empresa S.A."/>
+                                    </div>
+                                    <div class="credit-field">
+                                        <label for="cuit">CUIT <span class="req">*</span></label>
+                                        <input type="text" name="cuit" id="cuit"
+                                               placeholder="XX-XXXXXXXX-X"/>
+                                    </div>
+                                </div>
+                                <div class="credit-field-row">
+                                    <div class="credit-field full-width">
+                                        <label for="email_corp">Email Corporativo <span class="req">*</span></label>
+                                        <input type="email" name="email_corp" id="email_corp"
+                                               placeholder="ejemplo@empresa.com"/>
+                                    </div>
+                                </div>
+
+                                <h3 class="credit-subsection">Sector Compras</h3>
+                                <div class="credit-field-row three-cols">
+                                    <div class="credit-field">
+                                        <label for="compras_name">Nombre <span class="req">*</span></label>
+                                        <input type="text" name="compras_name" id="compras_name"/>
+                                    </div>
+                                    <div class="credit-field">
+                                        <label for="compras_mail">Mail <span class="req">*</span></label>
+                                        <input type="email" name="compras_mail" id="compras_mail"/>
+                                    </div>
+                                    <div class="credit-field">
+                                        <label for="compras_phone">Teléfono <span class="req">*</span></label>
+                                        <input type="tel" name="compras_phone" id="compras_phone"/>
+                                    </div>
+                                </div>
+
+                                <h3 class="credit-subsection">Sector Pagos</h3>
+                                <div class="credit-field-row three-cols">
+                                    <div class="credit-field">
+                                        <label for="pagos_name">Nombre <span class="req">*</span></label>
+                                        <input type="text" name="pagos_name" id="pagos_name"/>
+                                    </div>
+                                    <div class="credit-field">
+                                        <label for="pagos_mail">Mail <span class="req">*</span></label>
+                                        <input type="email" name="pagos_mail" id="pagos_mail"/>
+                                    </div>
+                                    <div class="credit-field">
+                                        <label for="pagos_phone">Teléfono <span class="req">*</span></label>
+                                        <input type="tel" name="pagos_phone" id="pagos_phone"/>
+                                    </div>
+                                </div>
+
+                                <div class="credit-field-row">
+                                    <div class="credit-field full-width">
+                                        <label for="cbu_alias">CBU / Alias para operaciones <span class="req">*</span></label>
+                                        <input type="text" name="cbu_alias" id="cbu_alias"
+                                               placeholder="CBU o Alias bancario"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ── Personal Fields ───────────────────── -->
+                            <div id="personalFields" class="credit-fields-block" style="display:none;">
+                                <p class="credit-fields-intro">Completá tus datos personales:</p>
+                                <div class="credit-field-row">
+                                    <div class="credit-field">
+                                        <label for="full_name">Nombre Completo <span class="req">*</span></label>
+                                        <input type="text" name="full_name" id="full_name"/>
+                                    </div>
+                                    <div class="credit-field">
+                                        <label for="dni_cuit">DNI / CUIT <span class="req">*</span></label>
+                                        <input type="text" name="dni_cuit" id="dni_cuit"/>
+                                    </div>
+                                </div>
+                                <div class="credit-field-row">
+                                    <div class="credit-field">
+                                        <label for="email_contact">Email de Contacto <span class="req">*</span></label>
+                                        <input type="email" name="email_contact" id="email_contact"
+                                               placeholder="ejemplo@mail.com"/>
+                                    </div>
+                                    <div class="credit-field">
+                                        <label for="phone">Teléfono Celular <span class="req">*</span></label>
+                                        <input type="tel" name="phone" id="phone"
+                                               placeholder="+54 9 ..."/>
+                                    </div>
+                                </div>
+                                <div class="credit-field-row">
+                                    <div class="credit-field full-width">
+                                        <label for="cbu_alias_personal">CBU / Alias para operaciones <span class="req">*</span></label>
+                                        <input type="text" name="cbu_alias_personal" id="cbu_alias_personal"
+                                               placeholder="CBU o Alias bancario"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ╔════════════════════════════════════════════╗
+                             ║  SECTION 3 – Documentación Digital        ║
+                             ╚════════════════════════════════════════════╝ -->
+                        <div class="credit-section" id="sectionDocs">
+                            <div class="credit-section-number">3</div>
+                            <h2 class="credit-section-title">Documentación Digital</h2>
+                            <p class="credit-section-desc">
+                                Por favor, adjuntá archivos claros en formato PDF o imagen
+                                <strong>(máx. 5 MB)</strong>.
+                            </p>
+
+                            <!-- ── Company docs ──────────────────────── -->
+                            <div id="companyDocs" class="credit-docs-block">
+                                <div class="credit-doc-item">
+                                    <div class="credit-doc-icon">📄</div>
+                                    <div class="credit-doc-info">
+                                        <label for="doc_constancia_cuit">Constancia CUIT actualizada <span class="req">*</span></label>
+                                        <input type="file" name="doc_constancia_cuit" id="doc_constancia_cuit"
+                                               accept=".pdf,.jpg,.jpeg,.png" class="credit-file-input"/>
+                                    </div>
+                                </div>
+                                <div class="credit-doc-item">
+                                    <div class="credit-doc-icon">📄</div>
+                                    <div class="credit-doc-info">
+                                        <label for="doc_cm01">Formulario CM01 (Convenio Multilateral) <span class="req">*</span></label>
+                                        <input type="file" name="doc_cm01" id="doc_cm01"
+                                               accept=".pdf,.jpg,.jpeg,.png" class="credit-file-input"/>
+                                    </div>
+                                </div>
+                                <div class="credit-doc-item">
+                                    <div class="credit-doc-icon">📄</div>
+                                    <div class="credit-doc-info">
+                                        <label for="doc_exencion_iibb">Certificado Exención IIBB (Si corresponde)</label>
+                                        <input type="file" name="doc_exencion_iibb" id="doc_exencion_iibb"
+                                               accept=".pdf,.jpg,.jpeg,.png" class="credit-file-input"/>
+                                    </div>
+                                </div>
+                                <div class="credit-doc-item">
+                                    <div class="credit-doc-icon">📄</div>
+                                    <div class="credit-doc-info">
+                                        <label for="doc_nota_autorizacion">Nota de Autorización (Opcional si usás Orden de Compra)</label>
+                                        <input type="file" name="doc_nota_autorizacion" id="doc_nota_autorizacion"
+                                               accept=".pdf,.jpg,.jpeg,.png" class="credit-file-input"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ── Personal docs ─────────────────────── -->
+                            <div id="personalDocs" class="credit-docs-block" style="display:none;">
+                                <div class="credit-doc-item">
+                                    <div class="credit-doc-icon">🪪</div>
+                                    <div class="credit-doc-info">
+                                        <label for="doc_dni_frente">DNI — Frente <span class="req">*</span></label>
+                                        <input type="file" name="doc_dni_frente" id="doc_dni_frente"
+                                               accept=".pdf,.jpg,.jpeg,.png" class="credit-file-input"/>
+                                    </div>
+                                </div>
+                                <div class="credit-doc-item">
+                                    <div class="credit-doc-icon">🪪</div>
+                                    <div class="credit-doc-info">
+                                        <label for="doc_dni_dorso">DNI — Dorso <span class="req">*</span></label>
+                                        <input type="file" name="doc_dni_dorso" id="doc_dni_dorso"
+                                               accept=".pdf,.jpg,.jpeg,.png" class="credit-file-input"/>
+                                    </div>
+                                </div>
+                                <div class="credit-doc-item">
+                                    <div class="credit-doc-icon">📄</div>
+                                    <div class="credit-doc-info">
+                                        <label for="doc_constancia_cuit_personal">Constancia de CUIT <span class="req">*</span></label>
+                                        <input type="file" name="doc_constancia_cuit_personal"
+                                               id="doc_constancia_cuit_personal"
+                                               accept=".pdf,.jpg,.jpeg,.png" class="credit-file-input"/>
+                                    </div>
+                                </div>
+                                <div class="credit-doc-item">
+                                    <div class="credit-doc-icon">🏠</div>
+                                    <div class="credit-doc-info">
+                                        <label for="doc_servicio_domicilio">Servicio de Luz / Gas / Agua (Validación de domicilio) <span class="req">*</span></label>
+                                        <input type="file" name="doc_servicio_domicilio"
+                                               id="doc_servicio_domicilio"
+                                               accept=".pdf,.jpg,.jpeg,.png" class="credit-file-input"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ╔════════════════════════════════════════════╗
+                             ║  SECTION 4 – Términos del Acuerdo        ║
+                             ╚════════════════════════════════════════════╝ -->
+                        <div class="credit-section" id="sectionTerms">
+                            <div class="credit-section-number">4</div>
+                            <h2 class="credit-section-title">Términos del Acuerdo Comercial</h2>
+
+                            <div class="credit-terms-box">
+                                <h3>Condiciones Generales — Casa Castelao</h3>
+                                <ol>
+                                    <li>
+                                        <strong>Declaración Jurada:</strong> El solicitante declara que toda
+                                        la información y documentación adjunta es verdadera y vigente.
+                                        Cualquier falsedad facultará a Casa Castelao a la cancelación
+                                        inmediata de cualquier crédito otorgado.
+                                    </li>
+                                    <li>
+                                        <strong>Autorización de Consulta:</strong> Autoriza expresamente a
+                                        Casa Castelao a consultar sus antecedentes crediticios en bases de
+                                        datos públicas y privadas (BCRA, Veraz, Nosis, etc.).
+                                    </li>
+                                    <li>
+                                        <strong>Mora y Gastos:</strong> En caso de cheques rechazados o mora
+                                        en el pago de la cuenta corriente, el solicitante se compromete a
+                                        cubrir los gastos bancarios y los intereses punitorios vigentes a la
+                                        fecha.
+                                    </li>
+                                    <li>
+                                        <strong>Órdenes de Compra:</strong> Se acepta que el envío de una
+                                        Orden de Compra oficial por parte de la empresa solicitante vincula
+                                        legalmente a la misma con el compromiso de pago, sin necesidad de
+                                        autorizaciones adicionales.
+                                    </li>
+                                    <li>
+                                        <strong>Habilitación de Cheques:</strong> En el caso de ECHEQs, la
+                                        mercadería se liberará únicamente una vez que el valor haya sido
+                                        "Aceptado" por Casa Castelao en su plataforma bancaria.
+                                    </li>
+                                </ol>
+                            </div>
+
+                            <label class="credit-terms-check">
+                                <input type="checkbox" name="accept_terms" id="accept_terms"/>
+                                <span>
+                                    He leído y acepto los
+                                    <strong>términos y condiciones</strong>
+                                    para operar con Casa Castelao.
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- ── Submit Button ─────────────────────────── -->
+                        <div class="credit-submit-wrapper">
+                            <button type="submit" class="credit-submit-btn" id="submitBtn" disabled="disabled">
+                                🚀 ENVIAR SOLICITUD
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         SUCCESS PAGE
+         ══════════════════════════════════════════════════════════════════ -->
+    <template id="credit_form_success" name="Solicitud Enviada">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <div class="credit-success-wrapper">
+                    <div class="credit-success-card">
+                        <div class="credit-success-icon">🚀</div>
+                        <h1>¡Recibimos todo perfecto!</h1>
+                        <p class="credit-success-lead">
+                            Gracias por enviarnos tu documentación. Nuestro equipo de
+                            <strong>Créditos</strong> ya está revisando tu legajo para habilitarte
+                            el pago con <strong>Cheques Diferidos</strong> o la
+                            <strong>Cuenta Corriente</strong>.
+                        </p>
+
+                        <div class="credit-success-steps">
+                            <h2>¿Qué sigue?</h2>
+                            <div class="credit-success-step">
+                                <span class="credit-step-num">1</span>
+                                <p>Analizamos los datos (esto suele demorar entre <strong>24 y 48 hs hábiles</strong>).</p>
+                            </div>
+                            <div class="credit-success-step">
+                                <span class="credit-step-num">2</span>
+                                <p>
+                                    Nos ponemos en contacto para confirmarte la
+                                    <strong>activación de tu cuenta</strong> y tu
+                                    <strong>límite inicial</strong>, o bien, para solicitarte
+                                    información extra si el análisis lo requiere.
+                                </p>
+                            </div>
+                        </div>
+
+                        <p class="credit-success-thanks">¡Gracias por confiar en nosotros!</p>
+                        <a href="/" class="credit-back-btn">← Volver al inicio</a>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>
