@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud de Crédito — Casa Castelao</title>
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --accent: #e94560;
+            --bg: #f4f6fb;
+            --card: #fff;
+            --border: #e0e4ef;
+            --text: #2d3142;
+            --muted: #7a7f9a;
+            --success: #27ae60;
+            --error: #e74c3c;
+            --radius: 12px;
+            --shadow: 0 4px 24px rgba(26, 26, 46, .10);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .wrapper {
+            min-height: 100vh;
+            padding: 40px 16px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 820px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .cr-header {
+            background: var(--primary);
+            padding: 36px 40px;
+            text-align: center;
+        }
+
+        .cr-header h1 {
+            color: #fff;
+            font-size: 1.55rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .cr-header p {
+            color: #aab0cc;
+            font-size: .95rem;
+        }
+
+        /* Sections */
+        .section {
+            padding: 32px 40px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 14px;
+        }
+
+        .step-badge {
+            background: var(--accent);
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .82rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            margin: -4px 0 18px;
+            font-size: .9rem;
+        }
+
+        /* Radio cards */
+        .radio-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .radio-card {
+            cursor: pointer;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .radio-card input {
+            display: none;
+        }
+
+        .radio-card.selected {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(233, 69, 96, .12);
+        }
+
+        .radio-inner {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .radio-icon {
+            font-size: 2rem;
+        }
+
+        .radio-inner strong {
+            font-size: .95rem;
+        }
+
+        .radio-inner small {
+            color: var(--muted);
+            font-size: .82rem;
+        }
+
+        /* Form blocks */
+        .block {
+            display: none;
+        }
+
+        .block.visible {
+            display: block;
+        }
+
+        /* Grids */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        /* Fields */
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field label {
+            font-size: .85rem;
+            font-weight: 600;
+        }
+
+        .field input[type=text],
+        .field input[type=email],
+        .field input[type=tel] {
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: .95rem;
+            background: #fafbff;
+            transition: border-color .2s;
+        }
+
+        .field input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(233, 69, 96, .1);
+        }
+
+        .req {
+            color: var(--accent);
+        }
+
+        /* Sub-sections */
+        .sub-section {
+            margin-top: 24px;
+        }
+
+        .sub-title {
+            font-size: .82rem;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            margin-bottom: 12px;
+        }
+
+        .mt {
+            margin-top: 20px;
+        }
+
+        /* Docs */
+        .docs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .upload-item {
+            border: 1.5px dashed var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            transition: border-color .2s;
+        }
+
+        .upload-item:hover {
+            border-color: var(--accent);
+        }
+
+        .upload-label {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        .doc-icon {
+            font-size: 1.4rem;
+        }
+
+        .doc-name {
+            font-size: .88rem;
+            font-weight: 600;
+        }
+
+        .doc-req {
+            font-size: .75rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .doc-opt {
+            font-size: .75rem;
+            color: var(--muted);
+        }
+
+        .file-drop {
+            margin-top: 10px;
+            background: var(--bg);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            position: relative;
+        }
+
+        .file-drop input[type=file] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+
+        .drop-hint {
+            font-size: .8rem;
+            color: var(--muted);
+        }
+
+        .file-chosen {
+            display: block;
+            font-size: .8rem;
+            font-weight: 600;
+            margin-top: 4px;
+            word-break: break-all;
+        }
+
+        .docs-placeholder {
+            padding: 28px;
+            text-align: center;
+            color: var(--muted);
+            font-size: .9rem;
+            background: var(--bg);
+            border-radius: 10px;
+        }
+
+        /* Terms */
+        .terms-box {
+            background: #f8f9fe;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            max-height: 240px;
+            overflow-y: auto;
+        }
+
+        .terms-box h4 {
+            font-size: .93rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .terms-box ol {
+            padding-left: 20px;
+        }
+
+        .terms-box li {
+            font-size: .87rem;
+            color: var(--text);
+            margin-bottom: 9px;
+            line-height: 1.5;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            font-size: .9rem;
+            font-weight: 500;
+        }
+
+        .checkbox-label input {
+            margin-top: 2px;
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+        }
+
+        /* Submit */
+        .submit-area {
+            padding: 32px 40px;
+            text-align: center;
+            background: var(--bg);
+        }
+
+        .btn-submit {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 16px 48px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background .2s, transform .1s, opacity .2s;
+            letter-spacing: .04em;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            background: #c73652;
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+        }
+
+        .submit-note {
+            margin-top: 12px;
+            font-size: .82rem;
+            color: var(--muted);
+        }
+
+        /* Alert */
+        .alert-error {
+            padding: 14px 24px;
+            font-size: .92rem;
+            background: #fdf3f3;
+            color: var(--error);
+            border-left: 4px solid var(--error);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* Responsive */
+        @media(max-width:640px) {
+
+            .section,
+            .cr-header,
+            .submit-area {
+                padding: 24px 16px;
+            }
+
+            .radio-group,
+            .grid-2,
+            .grid-3,
+            .docs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="card">
+
+            <div class="cr-header">
+                <h1>Solicitud de Crédito y Alta Comercial</h1>
+                <p>Completá los siguientes datos para habilitar el pago con cheques diferidos o tu cuenta corriente</p>
+            </div>
+
+            <form id="creditForm" action="https://credito-api.casacastelao.com.ar/submit" method="POST"
+                enctype="multipart/form-data">
+
+                <!-- 1. Perfil -->
+                <div class="section">
+                    <div class="section-title"><span class="step-badge">1</span> Perfil del Cliente</div>
+                    <p class="subtitle">¿Cómo vas a operar con nosotros?</p>
+                    <div class="radio-group">
+                        <label class="radio-card" id="card-empresa">
+                            <input type="radio" name="client_type" value="empresa" required>
+                            <div class="radio-inner">
+                                <span class="radio-icon">🏢</span>
+                                <strong>Empresa (Sociedad)</strong>
+                                <small>Persona jurídica / SA / SRL</small>
+                            </div>
+                        </label>
+                        <label class="radio-card" id="card-personal">
+                            <input type="radio" name="client_type" value="personal">
+                            <div class="radio-inner">
+                                <span class="radio-icon">👤</span>
+                                <strong>Personal (Monotributista / Unipersonal)</strong>
+                                <small>Persona física / autónomo</small>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 2. Info general -->
+                <div class="section">
+                    <div class="section-title"><span class="step-badge">2</span> Información General</div>
+
+                    <!-- EMPRESA -->
+                    <div id="block-empresa" class="block">
+                        <div class="grid-2">
+                            <div class="field">
+                                <label>Razón Social <span class="req">*</span></label>
+                                <input type="text" name="company_name" placeholder="Ferretería del Sur S.R.L.">
+                            </div>
+                            <div class="field">
+                                <label>CUIT <span class="req">*</span></label>
+                                <input type="text" name="company_cuit" placeholder="XX-XXXXXXXX-X" maxlength="13">
+                            </div>
+                            <div class="field full">
+                                <label>Email Corporativo <span class="req">*</span></label>
+                                <input type="email" name="company_email" placeholder="admin@empresa.com">
+                            </div>
+                        </div>
+                        <div class="sub-section">
+                            <div class="sub-title">📦 Sector Compras</div>
+                            <div class="grid-3">
+                                <div class="field"><label>Nombre</label><input type="text" name="purchase_name"
+                                        placeholder="Nombre y apellido"></div>
+                                <div class="field"><label>Mail</label><input type="email" name="purchase_email"
+                                        placeholder="compras@empresa.com"></div>
+                                <div class="field"><label>Teléfono</label><input type="tel" name="purchase_phone"
+                                        placeholder="+54 9 ..."></div>
+                            </div>
+                        </div>
+                        <div class="sub-section">
+                            <div class="sub-title">💳 Sector Pagos</div>
+                            <div class="grid-3">
+                                <div class="field"><label>Nombre</label><input type="text" name="payment_name"
+                                        placeholder="Nombre y apellido"></div>
+                                <div class="field"><label>Mail</label><input type="email" name="payment_email"
+                                        placeholder="pagos@empresa.com"></div>
+                                <div class="field"><label>Teléfono</label><input type="tel" name="payment_phone"
+                                        placeholder="+54 9 ..."></div>
+                            </div>
+                        </div>
+                        <div class="field mt">
+                            <label>CBU / Alias para operaciones</label>
+                            <input type="text" name="company_cbu" placeholder="CBU de 22 dígitos o alias">
+                        </div>
+                    </div>
+
+                    <!-- PERSONAL -->
+                    <div id="block-personal" class="block">
+                        <div class="grid-2">
+                            <div class="field"><label>Nombre Completo <span class="req">*</span></label><input
+                                    type="text" name="personal_name" placeholder="Nombre y apellido completo"></div>
+                            <div class="field"><label>DNI / CUIT <span class="req">*</span></label><input type="text"
+                                    name="personal_dni" placeholder="DNI o CUIT"></div>
+                            <div class="field"><label>Email de contacto <span class="req">*</span></label><input
+                                    type="email" name="personal_email" placeholder="ejemplo@mail.com"></div>
+                            <div class="field"><label>Teléfono celular <span class="req">*</span></label><input
+                                    type="tel" name="personal_phone" placeholder="+54 9 ..."></div>
+                            <div class="field full"><label>CBU / Alias para operaciones</label><input type="text"
+                                    name="personal_cbu" placeholder="CBU de 22 dígitos o alias"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Documentación -->
+                <div class="section">
+                    <div class="section-title"><span class="step-badge">3</span> Documentación Digital</div>
+                    <p class="subtitle">Adjuntá archivos en PDF o imagen — máx. 5MB cada uno</p>
+
+                    <div id="docs-placeholder" class="docs-placeholder">👆 Primero seleccioná el tipo de cliente para
+                        ver qué documentos necesitás adjuntar.</div>
+
+                    <!-- DOCS EMPRESA -->
+                    <div id="docs-empresa" class="block">
+                        <div class="docs-grid">
+                            <div class="upload-item">
+                                <label class="upload-label">
+                                    <span class="doc-icon">📄</span><span class="doc-name">Constancia CUIT
+                                        actualizada</span><span class="doc-req">Requerido</span>
+                                    <div class="file-drop"><input type="file" name="doc_cuit"
+                                            accept=".pdf,.jpg,.jpeg,.png"><span class="drop-hint">Arrastrá o hacé
+                                            clic</span><span class="file-chosen"></span></div>
+                                </label>
+                            </div>
+                            <div class="upload-item">
+                                <label class="upload-label">
+                                    <span class="doc-icon">📄</span><span class="doc-name">Formulario CM01 (Convenio
+                                        Multilateral)</span><span class="doc-req">Requerido</span>
+                                    <div class="file-drop"><input type="file" name="doc_cm01"
+                                            accept=".pdf,.jpg,.jpeg,.png"><span class="drop-hint">Arrastrá o hacé
+                                            clic</span><span class="file-chosen"></span></div>
+                                </label>
+                            </div>
+                            <div class="upload-item">
+                                <label class="upload-label">
+                                    <span class="doc-icon">📄</span><span class="doc-name">Certificado Exención
+                                        IIBB</span><span class="doc-opt">Opcional si corresponde</span>
+                                    <div class="file-drop"><input type="file" name="doc_iibb"
+                                            accept=".pdf,.jpg,.jpeg,.png"><span class="drop-hint">Arrastrá o hacé
+                                            clic</span><span class="file-chosen"></span></div>
+                                </label>
+                            </div>
+                            <div class="upload-item">
+                                <label class="upload-label">
+                                    <span class="doc-icon">📄</span><span class="doc-name">Nota de
+                                        Autorización</span><span class="doc-opt">Opcional si usás Orden de Compra</span>
+                                    <div class="file-drop"><input type="file" name="doc_nota"
+                                            accept=".pdf,.jpg,.jpeg,.png"><span class="drop-hint">Arrastrá o hacé
+                                            clic</span><span class="file-chosen"></span></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DOCS PERSONAL -->
+                    <div id="docs-personal" class="block">
+                        <div class="docs-grid">
+                            <div class="upload-item">
+                                <label class="upload-label">
+                                    <span class="doc-icon">🪪</span><span class="doc-name">DNI — Frente</span><span
+                                        class="doc-req">Requerido</span>
+                                    <div class="file-drop"><input type="file" name="doc_dni_frente"
+                                            accept=".pdf,.jpg,.jpeg,.png"><span class="drop-hint">Arrastrá o hacé
+                                            clic</span><span class="file-chosen"></span></div>
+                                </label>
+                            </div>
+                            <div class="upload-item">
+                                <label class="upload-label">
+                                    <span class="doc-icon">🪪</span><span class="doc-name">DNI — Dorso</span><span
+                                        class="doc-req">Requerido</span>
+                                    <div class="file-drop"><input type="file" name="doc_dni_dorso"
+                                            accept=".pdf,.jpg,.jpeg,.png"><span class="drop-hint">Arrastrá o hacé
+                                            clic</span><span class="file-chosen"></span></div>
+                                </label>
+                            </div>
+                            <div class="upload-item">
+                                <label class="upload-label">
+                                    <span class="doc-icon">📄</span><span class="doc-name">Constancia de
+                                        CUIT</span><span class="doc-req">Requerido</span>
+                                    <div class="file-drop"><input type="file" name="doc_cuit_personal"
+                                            accept=".pdf,.jpg,.jpeg,.png"><span class="drop-hint">Arrastrá o hacé
+                                            clic</span><span class="file-chosen"></span></div>
+                                </label>
+                            </div>
+                            <div class="upload-item">
+                                <label class="upload-label">
+                                    <span class="doc-icon">🏠</span><span class="doc-name">Servicio de Luz / Gas /
+                                        Agua</span><span class="doc-opt">Validación de domicilio</span>
+                                    <div class="file-drop"><input type="file" name="doc_servicio"
+                                            accept=".pdf,.jpg,.jpeg,.png"><span class="drop-hint">Arrastrá o hacé
+                                            clic</span><span class="file-chosen"></span></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Términos -->
+                <div class="section">
+                    <div class="section-title"><span class="step-badge">4</span> Términos del Acuerdo Comercial</div>
+                    <div class="terms-box">
+                        <h4>Condiciones Generales — Casa Castelao</h4>
+                        <ol>
+                            <li><strong>Declaración Jurada:</strong> El solicitante declara que toda la información y
+                                documentación adjunta es verdadera y vigente. Cualquier falsedad facultará a Casa
+                                Castelao a la cancelación inmediata de cualquier crédito otorgado.</li>
+                            <li><strong>Autorización de Consulta:</strong> Autoriza expresamente a Casa Castelao a
+                                consultar sus antecedentes crediticios en bases de datos públicas y privadas (BCRA,
+                                Veraz, Nosis, etc.).</li>
+                            <li><strong>Mora y Gastos:</strong> En caso de cheques rechazados o mora en el pago de la
+                                cuenta corriente, el solicitante se compromete a cubrir los gastos bancarios y los
+                                intereses punitorios vigentes a la fecha.</li>
+                            <li><strong>Órdenes de Compra:</strong> Se acepta que el envío de una Orden de Compra
+                                oficial vincula legalmente a la empresa con el compromiso de pago, sin necesidad de
+                                autorizaciones adicionales.</li>
+                            <li><strong>Habilitación de Cheques:</strong> En el caso de ECHEQs, la mercadería se
+                                liberará únicamente una vez que el valor haya sido "Aceptado" por Casa Castelao en su
+                                plataforma bancaria.</li>
+                        </ol>
+                    </div>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="accepted_terms" id="accepted_terms" required>
+                        <span>He leído y acepto los términos y condiciones para operar con Casa Castelao.</span>
+                    </label>
+                </div>
+
+                <!-- Submit -->
+                <div class="submit-area">
+                    <button type="submit" class="btn-submit" id="submitBtn" disabled>
+                        🚀 ENVIAR SOLICITUD
+                    </button>
+                    <p class="submit-note">Al enviar, recibirás una confirmación por email.</p>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const radios = document.querySelectorAll('input[name="client_type"]');
+            const terms = document.getElementById('accepted_terms');
+            const btn = document.getElementById('submitBtn');
+
+            function showBlocks(type) {
+                ['block-empresa', 'block-personal', 'docs-empresa', 'docs-personal'].forEach(id => {
+                    document.getElementById(id).classList.remove('visible');
+                });
+                const ph = document.getElementById('docs-placeholder');
+                if (type) {
+                    document.getElementById('block-' + type).classList.add('visible');
+                    document.getElementById('docs-' + type).classList.add('visible');
+                    ph.style.display = 'none';
+                } else {
+                    ph.style.display = '';
+                }
+                // radio card highlight
+                document.querySelectorAll('.radio-card').forEach(c => c.classList.remove('selected'));
+                const card = document.getElementById('card-' + type);
+                if (card) card.classList.add('selected');
+            }
+
+            function checkReady() {
+                const typeOk = Array.from(radios).some(r => r.checked);
+                btn.disabled = !(typeOk && terms.checked);
+            }
+
+            radios.forEach(r => {
+                r.addEventListener('change', function () { showBlocks(this.value); checkReady(); });
+            });
+            terms.addEventListener('change', checkReady);
+
+            // File feedback
+            document.querySelectorAll('.file-drop input[type=file]').forEach(input => {
+                input.addEventListener('change', function () {
+                    const file = this.files[0];
+                    const drop = this.closest('.file-drop');
+                    const hint = drop.querySelector('.drop-hint');
+                    const chosen = drop.querySelector('.file-chosen');
+                    if (!file) { hint.style.display = ''; chosen.textContent = ''; return; }
+                    if (file.size > 5 * 1024 * 1024) {
+                        chosen.textContent = '⚠️ Supera 5MB, elegí otro.';
+                        chosen.style.color = '#e74c3c';
+                        this.value = ''; return;
+                    }
+                    hint.style.display = 'none';
+                    chosen.textContent = '✅ ' + file.name;
+                    chosen.style.color = '#27ae60';
+                });
+            });
+
+            // Submit loading
+            document.getElementById('creditForm').addEventListener('submit', function () {
+                btn.textContent = '⏳ Enviando...';
+                btn.disabled = true;
+            });
+        })();
+    </script>
+
+</body>
+
+</html>
